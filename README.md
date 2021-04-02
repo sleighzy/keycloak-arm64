@@ -15,17 +15,14 @@ git clone https://github.com/keycloak/keycloak-containers.git
 cd keycloak-containers/server
 ```
 
-In my original `11.0.2-arm64` version I found that I was unable to build it
-using the default Dockerfile from their repository due to being unable to access
-the `registry.access.redhat.com/ubi8-minimal` image, or another base image it
-depended on. This did not appear to be the case when I built my `12.0.1-arm64`
-image, and the Red Hat site [Red Hat Universal Base Image 8 Minimal] showed that
-as publically available and I was able to pull and use it just fine.
+The Keycloak version in the `master` branch does not always match the most
+recent version of the official Keycloak image in Docker Hub. For example,
+`12.0.1` vs `12.0.4`. Switch to the `latest` branch as the `Dockerfile` in that
+branch should match the version and Dockerfile in Docker Hub.
 
-I have included the `Dockerfile-11.0.2` file for historical purposes should I
-need to revisit this, and because it matches that 11.0.2-arm64 tag in my Docker
-Hub repo. This should **NOT** be used for further builds as the official
-Keycloak `Dockerfile` seems to work fine now.
+```sh
+git branch latest
+```
 
 ## Build the image using Docker
 
@@ -38,20 +35,22 @@ initially when building this on my Mac laptop, I'll add some notes about this
 later.
 
 ```sh
-docker build -t sleighzy/keycloak:12.0.1-arm64 .
+docker build -t sleighzy/keycloak:12.0.4-arm64 .
 ```
 
 Run the container to ensure that it starts up as expected and that it runs to
 completion and is accessible.
 
 ```sh
-docker run --rm sleighzy/keycloak:12.0.1-arm64
+docker run --rm sleighzy/keycloak:12.0.4-arm64
 ```
 
-Push to Docker Hub. Profit.
+Tag the image as latest and push both tags to Docker Hub. Profit.
 
 ```sh
-docker push sleighzy/keycloak:12.0.1-arm64
+docker tag sleighzy/keycloak:12.0.4-arm64 sleighzy/keycloak:latest
+docker push sleighzy/keycloak:12.0.4-arm64
+docker push sleighzy/keycloak:latest
 ```
 
 ## Building the image with BuildKit for containerd
@@ -70,6 +69,4 @@ using `buildctl` to build these.
 [keycloak/keycloak-containers]: https://github.com/keycloak/keycloak-containers
 [leverage multi-cpu architecture support]:
   https://docs.docker.com/docker-for-mac/multi-arch/
-[red hat universal base image 8 minimal]:
-  https://catalog.redhat.com/software/containers/ubi8-minimal/5c64772edd19c77a158ea216?container-tabs=overview&architecture=arm64
 [sleighzy/keycloak]: https://hub.docker.com/repository/docker/sleighzy/keycloak
