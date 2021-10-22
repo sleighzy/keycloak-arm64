@@ -10,17 +10,17 @@ instructions below and provide the `linux/arm64` support.
 Clone the official GitHub repo [keycloak/keycloak-containers] to obtain the
 assets needed to build the container.
 
-```sh
+```plain
 git clone https://github.com/keycloak/keycloak-containers.git
 cd keycloak-containers/server
 ```
 
 The Keycloak version in the `master` branch does not always match the most
 recent version of the official Keycloak image in Docker Hub. For example,
-`12.0.1` vs `12.0.4`. Switch to the `latest` branch as the `Dockerfile` in that
+`15.0.0` vs `15.0.2`. Switch to the `latest` branch as the `Dockerfile` in that
 branch should match the version and Dockerfile in Docker Hub.
 
-```sh
+```plain
 git branch latest
 ```
 
@@ -34,22 +34,27 @@ architecture support] Docker docs for more info. This was one approach I took
 initially when building this on my Mac laptop, I'll add some notes about this
 later.
 
-```sh
-docker build -t sleighzy/keycloak:12.0.4-arm64 .
+```plain
+docker build -t sleighzy/keycloak:15.0.2-arm64 .
 ```
 
 Run the container to ensure that it starts up as expected and that it runs to
 completion and is accessible.
 
-```sh
-docker run --rm sleighzy/keycloak:12.0.4-arm64
+```plain
+docker run \
+  --rm \
+  -p 8080:8080 \
+  -e KEYCLOAK_USER=admin \
+  -e KEYCLOAK_PASSWORD=password \
+  sleighzy/keycloak:15.0.2-arm64
 ```
 
 Tag the image as latest and push both tags to Docker Hub. Profit.
 
-```sh
-docker tag sleighzy/keycloak:12.0.4-arm64 sleighzy/keycloak:latest
-docker push sleighzy/keycloak:12.0.4-arm64
+```plain
+docker tag sleighzy/keycloak:15.0.2-arm64 sleighzy/keycloak:latest
+docker push sleighzy/keycloak:15.0.2-arm64
 docker push sleighzy/keycloak:latest
 ```
 
